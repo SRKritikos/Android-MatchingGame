@@ -9,55 +9,66 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import sl.on.ca.comp208.imagematcher.data.TopScoresDAO;
 import sl.on.ca.comp208.imagematcher.model.ImageIds;
 
 public class MainActivity extends AppCompatActivity {
     Map<Integer, Integer> buttonImageIdMap;
     ImageIds imageIds;
+    int score = 0;
     int numberOfGuesses = 0;
     int previousImageId = 0;
+    long startTime = 0;
     ImageButton clickedButtonImage;
+    TopScoresDAO topScoresDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("On create being called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        imageIds = new ImageIds();
+        this.imageIds = new ImageIds();
+        this.topScoresDAO = new TopScoresDAO(this);
         this.buildImageModel();
+        this.setUpTimeUpdater();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        this.setContentView(R.layout.activity_main);
         this.buildImageModel();
     }
 
     public void flipImage(View view) {
         this.numberOfGuesses++;
-        clickedButtonImage = (ImageButton) view;
-        int tag = Integer.parseInt( clickedButtonImage.getTag().toString() );
+        this.clickedButtonImage = (ImageButton) view;
+        int tag = Integer.parseInt( this.clickedButtonImage.getTag().toString() );
         if (tag == 0) {
-            clickedButtonImage.setImageResource( buttonImageIdMap.get(clickedButtonImage.getId()) );
-            clickedButtonImage.setTag(1);
-            int clickedImageId = clickedButtonImage.getId();
-            if (previousImageId == 0) {
-                previousImageId = clickedImageId;
+            this.clickedButtonImage.setImageResource( buttonImageIdMap.get(clickedButtonImage.getId()) );
+            this.clickedButtonImage.setTag(1);
+            int clickedImageId = this.clickedButtonImage.getId();
+            if (this.previousImageId == 0) {
+                this.previousImageId = clickedImageId;
             } else {
-                System.out.println(buttonImageIdMap.get(previousImageId) + " " + buttonImageIdMap.get(clickedImageId));
-                if (!buttonImageIdMap.get(previousImageId).equals( buttonImageIdMap.get(clickedImageId)) ) {
-                    resetImageSides(clickedImageId, previousImageId);
+                if (!this.buttonImageIdMap.get(previousImageId).equals( this.buttonImageIdMap.get(clickedImageId)) ) {
+                    resetImageSides(clickedImageId, this.previousImageId);
                 } else {
-                    //TODO : Update player score;
+                    this.score += 10;
                 }
-                previousImageId = 0;
+                this.previousImageId = 0;
             }
         }
     }
@@ -67,17 +78,39 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(new PauseImageTimerTask(currentImage, previousImage), 1000);
     }
 
-    public void goToScoreActivity(View view) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("msg", "msg from main activity");
-        editor.putInt("score", this.numberOfGuesses);
-        editor.commit();
-        Intent intent = new Intent(this, ScoreActivity.class);
-        intent.putExtra("score", this.numberOfGuesses);
-        this.startActivity(intent);
+    private void setUpTimeUpdater() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        long millis = System.currentTimeMillis() - startTime;
+                        int seconds = (int) (millis / 1000);
+                        int minutes = seconds / 60;
+                        seconds = seconds % 60;
+                        TextView textView = (TextView) findViewById(R.id.timerTxt);
+                        textView.setText(String.format("%d:%02d", minutes, seconds));
+                    }
+                });
+            }
+        },0, 100);
+
     }
 
+    public void goToScoreActivity(View view) {
+        //Refactor into dao
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("score", this.score);
+        editor.putInt("numGuesses", this.numberOfGuesses);
+        editor.commit();
+        Intent intent = new Intent(this, ScoreActivity.class);
+        intent.putExtra("numGuesses", this.numberOfGuesses);
+        intent.putExtra("score", this.score);
+        this.startActivity(intent);
+    }
 
     private void buildImageModel() {
         this.buttonImageIdMap = new HashMap<>();

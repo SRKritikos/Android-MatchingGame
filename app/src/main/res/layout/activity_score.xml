@@ -9,4 +9,43 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="sl.on.ca.comp208.imagematcher.ScoreActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Final Score:"
+        android:id="@+id/finalScoreLabel"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:text="Score"
+        android:id="@+id/finalScoreTxt"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/finalScoreLabel"
+        android:layout_toEndOf="@+id/finalScoreLabel" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number of guesses:"
+        android:id="@+id/numGuessesLabel"
+        android:layout_below="@+id/finalScoreLabel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="66dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:text="Num"
+        android:id="@+id/numGuessesTxt"
+        android:layout_toRightOf="@+id/finalScoreLabel"
+        android:layout_toEndOf="@+id/numGuessesLabel"
+        android:layout_alignTop="@+id/numGuessesLabel"
+        android:layout_alignBottom="@+id/numGuessesLabel" />
 </RelativeLayout>
