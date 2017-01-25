@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Steven on 1/23/2017.
  */
 
-public class UserScore implements Serializable {
+public class UserScore implements Serializable, Comparable<UserScore> {
     int minutes;
     int seconds;
     int score;
@@ -39,5 +39,17 @@ public class UserScore implements Serializable {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Override
+    public int compareTo(UserScore userScore) {
+        int comparedUserScore = userScore.getScore() + userScore.getMinutes() + userScore.getSeconds();
+        int currentUserScore = this.score + this.minutes + this.seconds;
+        if (currentUserScore > comparedUserScore) {
+            return -1;
+        } else if (currentUserScore < comparedUserScore) {
+            return 1;
+        }
+        return 0;
     }
 }
