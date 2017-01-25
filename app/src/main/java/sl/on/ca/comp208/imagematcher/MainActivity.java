@@ -1,5 +1,6 @@
 package sl.on.ca.comp208.imagematcher;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -13,15 +14,18 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import sl.on.ca.comp208.imagematcher.data.TopScoresDAO;
 import sl.on.ca.comp208.imagematcher.model.ImageIds;
+import sl.on.ca.comp208.imagematcher.model.UserScore;
 
 public class MainActivity extends AppCompatActivity {
     Map<Integer, Integer> buttonImageIdMap;
@@ -29,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
     int score = 0;
     int numberOfGuesses = 0;
     int previousImageId = 0;
-    long startTime = 0;
+    long startTime = System.currentTimeMillis();
+    int minutes = 0;
+    int seconds = 0;
+    int numberOfMatches = 0;
     ImageButton clickedButtonImage;
     TopScoresDAO topScoresDAO;
 
@@ -42,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         this.topScoresDAO = new TopScoresDAO(this);
         this.buildImageModel();
         this.setUpTimeUpdater();
-
     }
 
     @Override
@@ -64,52 +70,60 @@ public class MainActivity extends AppCompatActivity {
                 this.previousImageId = clickedImageId;
             } else {
                 if (!this.buttonImageIdMap.get(previousImageId).equals( this.buttonImageIdMap.get(clickedImageId)) ) {
-                    resetImageSides(clickedImageId, this.previousImageId);
+                    this.resetImageSides(clickedImageId, this.previousImageId);
                 } else {
                     this.score += 10;
+                    this.numberOfMatches++;
+                    if (this.numberOfMatches * 2 == this.imageIds.getImageIds().size()) {
+                        this.endGame();
+                    }
                 }
                 this.previousImageId = 0;
             }
         }
     }
 
-    private void resetImageSides(int currentImage, int previousImage) {
+    private void endGame() {
+        UserScore userScore = this.topScoresDAO.getUserScore(this.score, this.minutes, this.seconds);
+        this.topScoresDAO.updateTopScores(userScore);
+        ArrayList<UserScore> userTopScoreList = this.topScoresDAO.getTopUserScores();
+        Intent intent = new Intent(this, ScoreActivity.class);
+        intent.putExtra("topScores", userTopScoreList);
+        intent.putExtra("score", score);
+        intent.putExtra("numGuesses", numberOfGuesses);
+        intent.putExtra("time", minutes+":"+seconds);
+        this.finish();
+        startActivity(intent);
+    }
+
+    private void resetImageSides(final int currentImage, final int previousImage) {
         Timer timer = new Timer();
-        timer.schedule(new PauseImageTimerTask(currentImage, previousImage), 1000);
+        timer.schedule(new UIThreadTimerTask(this, new IGoTime(){
+            @Override
+            public void timeGone() {
+                ImageButton currentImageButton = (ImageButton) findViewById(currentImage);
+                currentImageButton.setImageResource(R.drawable.back_side);
+                currentImageButton.setTag(0);
+                ImageButton previousImageButton = (ImageButton) findViewById(previousImage);
+                previousImageButton.setImageResource(R.drawable.back_side);
+                previousImageButton.setTag(0);
+            }
+        }), 1000);
     }
 
     private void setUpTimeUpdater() {
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.scheduleAtFixedRate(new UIThreadTimerTask(this, new IGoTime() {
             @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        long millis = System.currentTimeMillis() - startTime;
-                        int seconds = (int) (millis / 1000);
-                        int minutes = seconds / 60;
-                        seconds = seconds % 60;
-                        TextView textView = (TextView) findViewById(R.id.timerTxt);
-                        textView.setText(String.format("%d:%02d", minutes, seconds));
-                    }
-                });
+            public void timeGone() {
+                long millis = System.currentTimeMillis() - startTime;
+                seconds = (int) (millis / 1000);
+                minutes = seconds / 60;
+                seconds = seconds % 60;
+                TextView textView = (TextView) findViewById(R.id.timerTxt);
+                textView.setText( String.format("%d:%02d", minutes, seconds) );
             }
-        },0, 100);
-
-    }
-
-    public void goToScoreActivity(View view) {
-        //Refactor into dao
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("score", this.score);
-        editor.putInt("numGuesses", this.numberOfGuesses);
-        editor.commit();
-        Intent intent = new Intent(this, ScoreActivity.class);
-        intent.putExtra("numGuesses", this.numberOfGuesses);
-        intent.putExtra("score", this.score);
-        this.startActivity(intent);
+        }), 0, 100);
     }
 
     private void buildImageModel() {
@@ -130,34 +144,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Class to pause an image before next task is executed.
-     */
-    private class PauseImageTimerTask extends TimerTask {
-        private int previousImage;
-        private int currentImage;
-
-        public PauseImageTimerTask(int currentImage, int previousImage) {
-            this.currentImage = currentImage;
-            this.previousImage = previousImage;
-        }
-
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ImageButton currentImageButton = (ImageButton) findViewById(currentImage);
-                    currentImageButton.setImageResource(R.drawable.back_side);
-                    currentImageButton.setTag(0);
-                    ImageButton previousImageButton = (ImageButton) findViewById(previousImage);
-                    previousImageButton.setImageResource(R.drawable.back_side);
-                    previousImageButton.setTag(0);
-                }
-            });
         }
     }
 }

@@ -48,4 +48,25 @@
         android:layout_toEndOf="@+id/numGuessesLabel"
         android:layout_alignTop="@+id/numGuessesLabel"
         android:layout_alignBottom="@+id/numGuessesLabel" />
+
+    <TextView
+        android:text="Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/finalScoreLabel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="22dp"
+        android:id="@+id/timeLabel" />
+
+    <TextView
+        android:text="Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/timeLabel"
+        android:layout_toRightOf="@+id/timeLabel"
+        android:layout_toEndOf="@+id/timeLabel"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:id="@+id/timeTxt" />
 </RelativeLayout>

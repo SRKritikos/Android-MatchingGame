@@ -1,10 +1,12 @@
 package sl.on.ca.comp208.imagematcher.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Steven on 1/23/2017.
  */
 
-public class UserScore {
+public class UserScore implements Serializable {
     int minutes;
     int seconds;
     int score;

@@ -19,7 +19,7 @@ import sl.on.ca.comp208.imagematcher.model.UserScore;
  */
 
 public class TopScoresDAO {
-    private List<UserScore> topUserScores;
+    private ArrayList<UserScore> topUserScores;
     private final int NUMBER_OF_TOP_SCORES = 5;
     SharedPreferences sharedPreferences;
 
@@ -55,11 +55,15 @@ public class TopScoresDAO {
 
 
     public List<UserScore> updateTopScores(UserScore newUserScore) {
-        for (UserScore userScore : this.topUserScores) {
-            if (newUserScore.getScore() > userScore.getScore()) {
-                this.topUserScores.remove(userScore);
-                this.topUserScores.add(newUserScore);
-                break;
+        if (this.topUserScores.size() < NUMBER_OF_TOP_SCORES) {
+            this.topUserScores.add(newUserScore);
+        } else {
+            for (UserScore userScore : this.topUserScores) {
+                if (newUserScore.getScore() > userScore.getScore()) {
+                    this.topUserScores.remove(userScore);
+                    this.topUserScores.add(newUserScore);
+                    break;
+                }
             }
         }
         this.sortUserScoresByScore();
@@ -76,7 +80,6 @@ public class TopScoresDAO {
             minutesSet.add( String.valueOf(userScore.getMinutes()) );
             secondsSet.add( String.valueOf(userScore.getSeconds()) );
         }
-
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         editor.putStringSet("scores", scoresSet);
         editor.putStringSet("minutes", minutesSet);
@@ -94,7 +97,7 @@ public class TopScoresDAO {
         });
     }
 
-    public List<UserScore> getTopUserScores() {
+    public ArrayList<UserScore> getTopUserScores() {
         return topUserScores;
     }
 }
