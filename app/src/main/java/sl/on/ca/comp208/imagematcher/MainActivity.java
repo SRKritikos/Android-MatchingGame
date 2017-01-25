@@ -30,31 +30,41 @@ import sl.on.ca.comp208.imagematcher.model.UserScore;
 public class MainActivity extends AppCompatActivity {
     Map<Integer, Integer> buttonImageIdMap;
     ImageIds imageIds;
-    int score = 0;
-    int numberOfGuesses = 0;
-    int previousImageId = 0;
+    int score;
+    int numberOfGuesses;
+    int previousImageId;
     long startTime = System.currentTimeMillis();
-    int minutes = 0;
-    int seconds = 0;
-    int numberOfMatches = 0;
+    int minutes;
+    int seconds;
+    int numberOfMatches;
     ImageButton clickedButtonImage;
     TopScoresDAO topScoresDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("On create being called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.imageIds = new ImageIds();
         this.topScoresDAO = new TopScoresDAO(this);
+        this.initializeGameValues();
         this.buildImageModel();
         this.setUpTimeUpdater();
+    }
+
+    private void initializeGameValues() {
+        this.score = 0;
+        this.numberOfMatches = 0;
+        this.numberOfGuesses = 0;
+        this.startTime = System.currentTimeMillis();
+        this.minutes = 0;
+        this.seconds = 0;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         this.setContentView(R.layout.activity_main);
+        this.initializeGameValues();
         this.buildImageModel();
     }
 
@@ -92,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("score", score);
         intent.putExtra("numGuesses", numberOfGuesses);
         intent.putExtra("time", minutes+":"+seconds);
-        this.finish();
         startActivity(intent);
     }
 

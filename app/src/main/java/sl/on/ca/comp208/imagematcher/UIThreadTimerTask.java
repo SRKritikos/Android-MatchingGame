@@ -25,6 +25,5 @@ public class UIThreadTimerTask extends TimerTask {
                 goTime.go();
             }
         });
-
     }
 }

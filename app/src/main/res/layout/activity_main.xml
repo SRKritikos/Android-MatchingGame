@@ -31,16 +31,12 @@
             android:layout_height="match_parent" >
             <ImageButton android:id="@+id/image1"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/pink_flowers" />-->
             <ImageButton android:id="@+id/image2"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/green_flowers" />-->
             <ImageButton android:id="@+id/image3"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/red_flowers" />-->
             <ImageButton android:id="@+id/image4"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/yellow_flowers" />-->
         </TableRow>
 
         <TableRow
@@ -49,16 +45,12 @@
             android:layout_height="match_parent" >
             <ImageButton android:id="@+id/image5"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/white_flowers" />-->
             <ImageButton android:id="@+id/image6"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/blue_flowers" />-->
             <ImageButton android:id="@+id/image7"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/green_flowers" />-->
             <ImageButton android:id="@+id/image8"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/pink_flowers" />-->
         </TableRow>
 
         <TableRow
@@ -67,16 +59,12 @@
             android:layout_height="match_parent" >
             <ImageButton android:id="@+id/image9"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/red_flowers" />-->
             <ImageButton android:id="@+id/image10"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/yellow_flowers" />-->
             <ImageButton android:id="@+id/image11"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/purple_flowers" />-->
             <ImageButton android:id="@+id/image12"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/purple_flowers" />-->
         </TableRow>
 
         <TableRow
@@ -85,36 +73,23 @@
             android:layout_height="match_parent" >
             <ImageButton android:id="@+id/image13"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/white_flowers" />-->
             <ImageButton android:id="@+id/image14"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/blue_flowers" />-->
             <ImageButton android:id="@+id/image15"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/orange_flowers" />-->
             <ImageButton android:id="@+id/image16"
                 style="@style/imageStyle"/>
-                <!--app:srcCompat="@drawable/orange_flowers" />-->
         </TableRow>
     </TableLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/view_score_btntext"
-        android:id="@+id/viewScoreBtn"
-        android:layout_below="@+id/textTitle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="69dp"
-        android:onClick="goToScoreActivity"/>
-
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Timer"
+        android:textSize="@dimen/timer_text_size"
         android:id="@+id/timerTxt"
         android:layout_below="@+id/textTitle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="77dp" />
 </RelativeLayout>
