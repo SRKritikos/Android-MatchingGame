@@ -1,7 +1,6 @@
 package sl.on.ca.comp208.imagematcher;
 
 import android.app.Activity;
-import android.content.Context;
 
 import java.util.TimerTask;
 
@@ -23,7 +22,7 @@ public class UIThreadTimerTask extends TimerTask {
         this.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                goTime.timeGone();
+                goTime.go();
             }
         });
 

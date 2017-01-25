@@ -5,5 +5,5 @@ package sl.on.ca.comp208.imagematcher;
  */
 
 public interface IGoTime  {
-    void timeGone();
+    void go();
 }

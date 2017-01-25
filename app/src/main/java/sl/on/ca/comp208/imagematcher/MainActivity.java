@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         Timer timer = new Timer();
         timer.schedule(new UIThreadTimerTask(this, new IGoTime(){
             @Override
-            public void timeGone() {
+            public void go() {
                 ImageButton currentImageButton = (ImageButton) findViewById(currentImage);
                 currentImageButton.setImageResource(R.drawable.back_side);
                 currentImageButton.setTag(0);
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new UIThreadTimerTask(this, new IGoTime() {
             @Override
-            public void timeGone() {
+            public void go() {
                 long millis = System.currentTimeMillis() - startTime;
                 seconds = (int) (millis / 1000);
                 minutes = seconds / 60;
